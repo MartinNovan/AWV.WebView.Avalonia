@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWV.WebView.Avalonia", "AWV.WebView.Avalonia\AWV.WebView.Avalonia.csproj", "{A5BE45AE-864C-4B22-82A2-715171DEC313}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWV.WebView.Avalonia.Sample", "AWV.WebView.Avalonia.Sample\AWV.WebView.Avalonia.Sample.csproj", "{A698289E-52EF-4270-8A9B-E8789D04ECBC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A5BE45AE-864C-4B22-82A2-715171DEC313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5BE45AE-864C-4B22-82A2-715171DEC313}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5BE45AE-864C-4B22-82A2-715171DEC313}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5BE45AE-864C-4B22-82A2-715171DEC313}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A698289E-52EF-4270-8A9B-E8789D04ECBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A698289E-52EF-4270-8A9B-E8789D04ECBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A698289E-52EF-4270-8A9B-E8789D04ECBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A698289E-52EF-4270-8A9B-E8789D04ECBC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
