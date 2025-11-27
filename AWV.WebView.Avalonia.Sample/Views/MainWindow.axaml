@@ -1,10 +1,12 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:AWV.WebView.Avalonia.Sample.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:avalonia="clr-namespace:AWV.WebView.Avalonia;assembly=AWV.WebView.Avalonia"
+        xmlns:views="clr-namespace:AWV.WebView.Avalonia.Sample.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="AWV.WebView.Avalonia.Sample.MainWindow"
+        x:Class="AWV.WebView.Avalonia.Sample.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
         Title="AWV.WebView.Avalonia.Sample">
-    <avalonia:WebView Url="https:www.github.com"/> 
+        <views:MainView />
 </Window>

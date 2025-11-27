@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace AWV.WebView.Avalonia.Sample;
+namespace AWV.WebView.Avalonia.Sample.Views;
 
 public partial class MainWindow : Window
 {

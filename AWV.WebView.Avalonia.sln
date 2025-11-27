@@ -1,8 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWV.WebView.Avalonia", "AWV.WebView.Avalonia\AWV.WebView.Avalonia.csproj", "{A5BE45AE-864C-4B22-82A2-715171DEC313}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32811.315
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWV.WebView.Avalonia.Sample", "AWV.WebView.Avalonia.Sample\AWV.WebView.Avalonia.Sample.csproj", "{EBFA8512-1EA5-4D8C-B4AC-AB5B48A6D568}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWV.WebView.Avalonia.Sample", "AWV.WebView.Avalonia.Sample\AWV.WebView.Avalonia.Sample.csproj", "{A698289E-52EF-4270-8A9B-E8789D04ECBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWV.WebView.Avalonia.Sample.Windows", "AWV.WebView.Avalonia.Sample.Windows\AWV.WebView.Avalonia.Sample.Windows.csproj", "{ABC31E74-02FF-46EB-B3B2-4E6AE43B456C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWV.WebView.Avalonia.Sample.iOS", "AWV.WebView.Avalonia.Sample.iOS\AWV.WebView.Avalonia.Sample.iOS.csproj", "{EBD9022F-BC83-4846-9A11-6F7F3772DC64}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWV.WebView.Avalonia.Sample.Android", "AWV.WebView.Avalonia.Sample.Android\AWV.WebView.Avalonia.Sample.Android.csproj", "{7AD1DAC8-7FBE-49D5-8614-7321233DB82E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3DA99C4E-89E3-4049-9C22-0A7EC60D83D8}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWV.WebView.Avalonia", "AWV.WebView.Avalonia\AWV.WebView.Avalonia.csproj", "{058019B4-48FB-45E0-B426-1386875AA334}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWV.WebView.Avalonia.Sample.LinuxX11", "AWV.WebView.Avalonia.Sample.LinuxX11\AWV.WebView.Avalonia.Sample.LinuxX11.csproj", "{FF5DF9BD-A09E-4EFA-8096-5DB30489B1D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +26,35 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A5BE45AE-864C-4B22-82A2-715171DEC313}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5BE45AE-864C-4B22-82A2-715171DEC313}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5BE45AE-864C-4B22-82A2-715171DEC313}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5BE45AE-864C-4B22-82A2-715171DEC313}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A698289E-52EF-4270-8A9B-E8789D04ECBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A698289E-52EF-4270-8A9B-E8789D04ECBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A698289E-52EF-4270-8A9B-E8789D04ECBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A698289E-52EF-4270-8A9B-E8789D04ECBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBFA8512-1EA5-4D8C-B4AC-AB5B48A6D568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBFA8512-1EA5-4D8C-B4AC-AB5B48A6D568}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBFA8512-1EA5-4D8C-B4AC-AB5B48A6D568}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBFA8512-1EA5-4D8C-B4AC-AB5B48A6D568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABC31E74-02FF-46EB-B3B2-4E6AE43B456C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABC31E74-02FF-46EB-B3B2-4E6AE43B456C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABC31E74-02FF-46EB-B3B2-4E6AE43B456C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABC31E74-02FF-46EB-B3B2-4E6AE43B456C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBD9022F-BC83-4846-9A11-6F7F3772DC64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBD9022F-BC83-4846-9A11-6F7F3772DC64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBD9022F-BC83-4846-9A11-6F7F3772DC64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBD9022F-BC83-4846-9A11-6F7F3772DC64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AD1DAC8-7FBE-49D5-8614-7321233DB82E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AD1DAC8-7FBE-49D5-8614-7321233DB82E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AD1DAC8-7FBE-49D5-8614-7321233DB82E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AD1DAC8-7FBE-49D5-8614-7321233DB82E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{058019B4-48FB-45E0-B426-1386875AA334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{058019B4-48FB-45E0-B426-1386875AA334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{058019B4-48FB-45E0-B426-1386875AA334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{058019B4-48FB-45E0-B426-1386875AA334}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF5DF9BD-A09E-4EFA-8096-5DB30489B1D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF5DF9BD-A09E-4EFA-8096-5DB30489B1D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF5DF9BD-A09E-4EFA-8096-5DB30489B1D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF5DF9BD-A09E-4EFA-8096-5DB30489B1D2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {83CB65B8-011F-4ED7-BCD3-A6CFA935EF7E}
 	EndGlobalSection
 EndGlobal
