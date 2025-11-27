@@ -49,12 +49,12 @@ sudo pacman -Syu gtk3 webkit2gtk
 - **Windows**: WebView2 runtime
 ---
 ## Tested Platforms
-- **Windows 11**
-  ![Windows\_preview.png](Pictures/Windows_preview.png)
-- **Arch Linux**
-  ![Linux\_preview.png](Pictures/Linux_preview.png)
-- **Android**
-  ![Android\_preview.png](Pictures/Android_preview.png)
+### **Windows 11**
+ ![Windows\_preview.png](Pictures/Windows_preview.png)
+### **Arch Linux**
+ ![Linux\_preview.png](Pictures/Linux_preview.png)
+### **Android**
+ ![Android\_preview.png](Pictures/Android_preview.png)
 ---
 ## Notes
 - This project started as side project of my bigger project, so it might not be perfect.
@@ -63,4 +63,5 @@ sudo pacman -Syu gtk3 webkit2gtk
 - If you found any issues, or want some features to add, please report them on the [Issues page](https://github.com/MartinNovan/AWV.WebView.Avalonia/issues).
 ---
 ## License
+
 - This project is under [GNU GENERAL PUBLIC LICENSE Version 3](./LICENSE).
