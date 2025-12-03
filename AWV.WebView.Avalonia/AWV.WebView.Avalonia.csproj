@@ -4,16 +4,31 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
+
+        <Title>AWV.WebView.Avalonia</Title>
+        <Authors>MartinNovan</Authors>
+        <Description>Cross-platform WebView control for Avalonia. Supports Windows, Linux (GTK), and Android.</Description>
+        <PackageProjectUrl>https://github.com/MartinNovan/AWV.WebView.Avalonia</PackageProjectUrl>
+        <PackageLicense>https://github.com/MartinNovan/AWV.WebView.Avalonia/blob/master/LICENSE</PackageLicense>
+        <RepositoryUrl>https://github.com/MartinNovan/AWV.WebView.Avalonia</RepositoryUrl>
+        <PackageTags>Avalonia, WebView</PackageTags>
+        <PackageIcon>Assets/AWV_icon.png</PackageIcon>
+        <PackageReadmeFile>Assets/README.md</PackageReadmeFile>
+        <PackageLicenseFile>Assets/LICENSE</PackageLicenseFile>
     </PropertyGroup>
-    <!-- Windows-specific -->
+
+    <ItemGroup>
+        <None Include="Assets/*" Pack="true" PackagePath="Assets/" />
+    </ItemGroup>
+
     <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
         <UseWindowsForms>true</UseWindowsForms>
         <DefineConstants>WINDOWS</DefineConstants>
     </PropertyGroup>
 
-    <!-- Android-specific -->
     <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
         <DefineConstants>ANDROID</DefineConstants>
+        <SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,10 +39,10 @@
             <HintPath>..\..\..\..\.nuget\packages\avalonia\11.3.6\ref\net8.0\Avalonia.Controls.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.Web.WebView2.Core">
-          <HintPath>..\..\..\..\.nuget\packages\microsoft.web.webview2\1.0.3650-prerelease\lib_manual\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll</HintPath>
+            <HintPath>..\..\..\..\.nuget\packages\microsoft.web.webview2\1.0.3650-prerelease\lib_manual\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.Web.WebView2.WinForms">
-          <HintPath>..\..\..\..\.nuget\packages\microsoft.web.webview2\1.0.3650-prerelease\lib_manual\netcoreapp3.0\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+            <HintPath>..\..\..\..\.nuget\packages\microsoft.web.webview2\1.0.3650-prerelease\lib_manual\netcoreapp3.0\Microsoft.Web.WebView2.WinForms.dll</HintPath>
         </Reference>
     </ItemGroup>
 

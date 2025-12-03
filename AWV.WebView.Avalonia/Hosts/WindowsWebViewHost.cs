@@ -78,8 +78,7 @@ public class WindowsWebViewHost : WebViewHost.IWebViewHost
         try
         {
             await _webView!.EnsureCoreWebView2Async();
-            if (!string.IsNullOrEmpty(url))
-                _webView.CoreWebView2.Navigate(url);
+            _webView.CoreWebView2.Navigate(!string.IsNullOrEmpty(url) ? url : "about:blank"); // Load blank page when passed url is wrong, else load the passed one
         }
         catch (Exception ex)
         {

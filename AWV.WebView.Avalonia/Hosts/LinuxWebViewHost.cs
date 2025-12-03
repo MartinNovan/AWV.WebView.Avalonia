@@ -61,7 +61,7 @@ public class LinuxWebViewHost : WebViewHost.IWebViewHost
         GtkManager.EnsureInitialized();
 
         // create GtkPlug + WebView synchronously on GTK thread
-        var _url = string.IsNullOrEmpty(url) ? "about:blank" : url;
+        var _url = string.IsNullOrEmpty(url) ? "about:blank" : url; // Load blank page when passed url is wrong else load the passed one
         _nativePlug = GtkManager.CreatePlugWithWebView(parentXid, _url);
 
         // return plug XID as Avalonia native control handle

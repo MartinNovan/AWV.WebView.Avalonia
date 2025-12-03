@@ -91,10 +91,10 @@ namespace AWV.WebView.Avalonia.Hosts
                 // allow normal HTTP/HTTPS redirects
                 if (url != null && (url.StartsWith("http://") || url.StartsWith("https://")))
                 {
-                    view.LoadUrl(url);
+                    view.LoadUrl(url); // Load page with passed url
                     return true;
                 }
-
+                view.LoadUrl("about:blank"); // Load blank page when passed url is wrong
                 // block or handle other schemes (intent:, mailto:, etc.), maybe add option later
                 return true;
             }
