@@ -3,17 +3,14 @@
         <OutputType>WinExe</OutputType>
         <!--If you are willing to use Windows/MacOS native APIs you will need to create 3 projects.
         One for Windows with net9.0-windows TFM, one for MacOS with net9.0-macos and one with net9.0 TFM for Linux.-->
-        <TargetFramework>net9.0</TargetFramework> <!--<TargetFramework>net9.0-windows</TargetFramework> or <TargetFrameworks>net9.0;net9.0-windows</TargetFrameworks>-->
+        <TargetFramework>net9.0-windows</TargetFramework> <!--<TargetFramework>net9.0-windows</TargetFramework> or <TargetFrameworks>net9.0;net9.0-windows</TargetFrameworks>-->
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <UseWindowsForms>true</UseWindowsForms>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     </PropertyGroup>
 
-    <!--You can add this piece or change targetframework to net9.0-windows-->
-    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-        <UseWindowsForms>true</UseWindowsForms>
-        <TargetFramework>net9.0-windows</TargetFramework>
-    </PropertyGroup>
-    
     <PropertyGroup>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>

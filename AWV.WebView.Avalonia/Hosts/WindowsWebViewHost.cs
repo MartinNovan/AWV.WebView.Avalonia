@@ -3,14 +3,81 @@ using Avalonia.Platform;
 using AWV.WebView.Avalonia.Interfaces;
 using Microsoft.Web.WebView2.WinForms;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using Microsoft.Web.WebView2.Core;
 
 namespace AWV.WebView.Avalonia.Hosts;
 
 // Windows implementation of WebView using WebView2 + WinForms panel.
 // Hosts WebView2 inside Avalonia HWND via reparenting + window subclassing for resize.
-public class WindowsWebViewHost : WebViewHost.IWebViewHost
+internal sealed class WindowsWebViewHost : WebViewHost.IWebViewHost, WebViewHost.INavigationHost
 {
+    private WebViewNavigationPolicy _policy = new();
+    private string _pendingUrl = "about:blank";
+    private bool _loading;
+    private bool _destroyed;
+
+    public event Action<WebViewHost.NavigationSnapshot>? NavigationStateChanged;
+    public event Action<string, string>? NavigationBlocked;
+
+    public void SetNavigationPolicy(WebViewNavigationPolicy policy) =>
+        _policy = policy ?? throw new ArgumentNullException(nameof(policy));
+
+    public void Navigate(string url)
+    {
+        if (!_policy.IsAllowed(url, out var reason))
+        {
+            NavigationBlocked?.Invoke(url, reason);
+            return;
+        }
+        _pendingUrl = url;
+        if (_webView?.CoreWebView2 is { } core)
+            core.Navigate(url);
+    }
+
+    public void GoBack() { if (_webView?.CoreWebView2?.CanGoBack == true) _webView.CoreWebView2.GoBack(); }
+    public void GoForward() { if (_webView?.CoreWebView2?.CanGoForward == true) _webView.CoreWebView2.GoForward(); }
+    public void Reload() => _webView?.CoreWebView2?.Reload();
+    public void Stop()
+    {
+        _webView?.CoreWebView2?.Stop();
+        _loading = false;
+        PublishNavigationState();
+    }
+
+    private void PublishNavigationState()
+    {
+        if (_destroyed) return;
+        var core = _webView?.CoreWebView2;
+        NavigationStateChanged?.Invoke(new WebViewHost.NavigationSnapshot(
+            core?.Source ?? string.Empty, _loading,
+            core?.CanGoBack ?? false, core?.CanGoForward ?? false));
+    }
+
+    private void OnNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs args)
+    {
+        if (!_policy.IsAllowed(args.Uri, out var reason))
+        {
+            args.Cancel = true; // Also runs for HTTP redirects.
+            NavigationBlocked?.Invoke(args.Uri, reason);
+            return;
+        }
+        _loading = true;
+        PublishNavigationState();
+    }
+
+    private void OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs args)
+    {
+        _loading = false;
+        PublishNavigationState();
+    }
+
+    private void OnNewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs args)
+    {
+        // Opening the system browser would bypass this WebView's host policy.
+        args.Handled = true;
+        NavigationBlocked?.Invoke(args.Uri, "New windows are not supported");
+    }
+
     private WebView2? _webView;             // the actual WebView2 control
     private Control? _hostPanel;            // WinForms panel to host WebView2
     private IntPtr _parentHwnd;             // Avalonia native HWND
@@ -21,7 +88,9 @@ public class WindowsWebViewHost : WebViewHost.IWebViewHost
     // Creates WinForms host + WebView2 and parents it to Avalonia HWND.
     public IPlatformHandle Create(IPlatformHandle parent, string? url)
     {
+        _destroyed = false;
         _parentHwnd = parent.Handle;
+        _pendingUrl = string.IsNullOrWhiteSpace(url) ? "about:blank" : url;
 
         // create non-top-level host panel and fill parent
         _hostPanel = new Panel { Dock = DockStyle.Fill };
@@ -47,7 +116,7 @@ public class WindowsWebViewHost : WebViewHost.IWebViewHost
         _webView.CreateControl();
 
         // initialize WebView2 and navigate to URL
-        InitializeWebView(url);
+        InitializeWebView();
 
         // return WebView2 HWND to Avalonia
         return new PlatformHandle(_webView.Handle, "HWND");
@@ -56,6 +125,14 @@ public class WindowsWebViewHost : WebViewHost.IWebViewHost
     // Clean up native resources when Avalonia destroys the control.
     public void Destroy(IPlatformHandle control)
     {
+        _destroyed = true;
+        var core = _webView?.CoreWebView2;
+        if (core != null)
+        {
+            core.NavigationStarting -= OnNavigationStarting;
+            core.NavigationCompleted -= OnNavigationCompleted;
+            core.NewWindowRequested -= OnNewWindowRequested;
+        }
         UnsubclassParentWindow(); // restore parent WndProc
 
         try
@@ -73,16 +150,27 @@ public class WindowsWebViewHost : WebViewHost.IWebViewHost
     }
 
     // async initialization for WebView2 CoreWebView2 environment
-    private async void InitializeWebView(string? url)
+    private async void InitializeWebView()
     {
+        var view = _webView;
+        if (view == null) return;
         try
         {
-            await _webView!.EnsureCoreWebView2Async();
-            _webView.CoreWebView2.Navigate(!string.IsNullOrEmpty(url) ? url : "about:blank"); // Load blank page when passed url is wrong, else load the passed one
+            await view.EnsureCoreWebView2Async();
+            if (_destroyed || _webView != view) return;
+
+            var core = view.CoreWebView2;
+            core.NavigationStarting += OnNavigationStarting;
+            core.NavigationCompleted += OnNavigationCompleted;
+            core.SourceChanged += (_, _) => PublishNavigationState();
+            core.HistoryChanged += (_, _) => PublishNavigationState();
+            core.NewWindowRequested += OnNewWindowRequested;
+            Navigate(_pendingUrl);
+            PublishNavigationState();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"WebView2 init error: {ex.Message}");
+            Console.Error.WriteLine($"WebView2 initialization failed: {ex}");
         }
     }
 

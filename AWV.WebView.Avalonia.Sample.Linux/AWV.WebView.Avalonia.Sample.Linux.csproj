@@ -6,7 +6,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-        <RootNamespace>AWV.WebView.Avalonia.Sample.LinuxX11</RootNamespace>
+        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     </PropertyGroup>
 
     <PropertyGroup>

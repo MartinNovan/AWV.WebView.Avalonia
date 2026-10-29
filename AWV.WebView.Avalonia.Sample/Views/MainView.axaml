@@ -4,14 +4,71 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:AWV.WebView.Avalonia.Sample.ViewModels"
              xmlns:awv="clr-namespace:AWV.WebView.Avalonia;assembly=AWV.WebView.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
              x:Class="AWV.WebView.Avalonia.Sample.Views.MainView"
              x:DataType="vm:MainViewModel">
   <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
 
-    <awv:WebView Url="https://www.github.com"/>
+  <!-- The library does NOT supply the toolbar: this is ordinary Avalonia UI. -->
+  <Grid Margin="12" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="9">
+    <!-- Browser controls -->
+    <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto" ColumnSpacing="6">
+      <Button Grid.Column="0" Content="← Back" ToolTip.Tip="Go to previous page"
+              IsEnabled="{Binding CanGoBack}" Click="OnBackClicked" />
+      <Button Grid.Column="1" Content="Forward →" ToolTip.Tip="Go to next page"
+              IsEnabled="{Binding CanGoForward}" Click="OnForwardClicked" />
+      <Button Grid.Column="2" Content="↻ Reload" Click="OnReloadClicked" />
+      <Button Grid.Column="3" Content="Stop" IsEnabled="{Binding IsLoading}"
+              Click="OnStopClicked" />
+      <Button Grid.Column="4" Content="Home" Click="OnHomeClicked" />
+      <TextBox Grid.Column="5" x:Name="AddressBox"
+               Text="{Binding Address, Mode=TwoWay}"
+               Watermark="URL or local file path — press Enter to navigate"
+               KeyDown="OnAddressKeyDown" />
+      <Button Grid.Column="6" Content="Go →" Click="OnGoClicked" />
+    </Grid>
+
+    <!-- Host restrictions: editable without restarting the browser. -->
+    <Expander Grid.Row="1" Header="Navigation policy · allow/block hostnames" IsExpanded="False">
+      <Border Padding="12" BorderThickness="1" BorderBrush="#808080">
+        <StackPanel Spacing="8">
+          <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+            <StackPanel Grid.Column="0" Spacing="4">
+              <TextBlock Text="Allowed hosts (empty = any HTTP/HTTPS host)" />
+              <TextBox Text="{Binding AllowedHosts, Mode=TwoWay}"
+                       Watermark="example.com, *.example.com" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Spacing="4">
+              <TextBlock Text="Blocked hosts (takes precedence)" />
+              <TextBox Text="{Binding BlockedHosts, Mode=TwoWay}"
+                       Watermark="ads.example.com, *.tracking.example" />
+            </StackPanel>
+          </Grid>
+          <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <CheckBox Content="Allow local file:// pages" IsChecked="{Binding AllowLocalFiles, Mode=TwoWay}"
+                      VerticalAlignment="Center" />
+            <Button Content="Apply rules" Click="OnApplyPolicyClicked" />
+            <Button Content="Reset rules" Click="OnResetPolicyClicked" />
+            <Button Content="Open local history test" Click="OnLocalDemoClicked" />
+          </StackPanel>
+          <TextBlock FontSize="11" TextWrapping="Wrap" Opacity="0.75"
+                     Text="This policy filters supported page navigations, not images, scripts, downloads or all network requests. It is not a sandbox." />
+        </StackPanel>
+      </Border>
+    </Expander>
+
+    <!-- Real-time status and explicit errors from the policy -->
+    <Grid Grid.Row="2" ColumnDefinitions="Auto,*" ColumnSpacing="10">
+      <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" FontWeight="SemiBold" />
+      <TextBlock Grid.Column="1" Text="{Binding CurrentUrl}" Opacity="0.65"
+                 TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" />
+    </Grid>
+
+    <Border Grid.Row="3" BorderThickness="1" BorderBrush="#808080"
+            CornerRadius="6" ClipToBounds="True">
+      <awv:WebView x:Name="AwvWebView" Url="https://example.com" />
+    </Border>
+  </Grid>
 </UserControl>

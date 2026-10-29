@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFrameworks>net9.0;net9.0-windows;net9.0-android</TargetFrameworks>
+        <EnableWindowsTargeting>true</EnableWindowsTargeting>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
@@ -20,9 +21,29 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm"/>
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
+        <UseWindowsForms>true</UseWindowsForms>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
         <PackageReference Include="Microsoft.Web.WebView2" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
+        <PackageReference Include="Avalonia.Android" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- SDK already includes these HTML files as None items. Update the existing
+             items so referenced platform launchers can copy them to their bin output. -->
+        <None Update="DemoPages/**/*.html"
+              CopyToOutputDirectory="PreserveNewest"
+              CopyToPublishDirectory="PreserveNewest"
+              TargetPath="DemoPages/%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+    
     <ItemGroup>
       <ProjectReference Include="..\AWV.WebView.Avalonia\AWV.WebView.Avalonia.csproj" />
     </ItemGroup>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFrameworks>net9.0;net9.0-windows;net9.0-android</TargetFrameworks>
         <Nullable>enable</Nullable>
@@ -9,16 +9,30 @@
         <Authors>MartinNovan</Authors>
         <Description>Cross-platform WebView control for Avalonia. Supports Windows, Linux (GTK), and Android.</Description>
         <PackageProjectUrl>https://github.com/MartinNovan/AWV.WebView.Avalonia</PackageProjectUrl>
-        <PackageLicense>https://github.com/MartinNovan/AWV.WebView.Avalonia/blob/master/LICENSE</PackageLicense>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <RepositoryUrl>https://github.com/MartinNovan/AWV.WebView.Avalonia</RepositoryUrl>
-        <PackageTags>Avalonia, WebView</PackageTags>
+        <Version>2.0.0-preview.1</Version>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageTags>Avalonia;WebView;WebKitGTK;Wayland;WebView2;Android</PackageTags>
         <PackageIcon>Assets/AWV_icon.png</PackageIcon>
-        <PackageReadmeFile>Assets/README.md</PackageReadmeFile>
-        <PackageLicenseFile>Assets/LICENSE</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReleaseNotes>
+            - Added cross-platform navigation API (Back, Forward, Reload, Stop).
+            - Added URL allowlist and blocklist support.
+            - Added local HTML file support.
+            - Improved Linux WebKitGTK rendering and keyboard handling.
+            - Improved Android WebView integration.
+            - Added cross-platform sample application.
+            - Fixed various stability and navigation issues.
+        </PackageReleaseNotes>
+        <Copyright>Copyright © 2026 Martin Novan</Copyright>
+        
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="Assets/*" Pack="true" PackagePath="Assets/" />
+        <None Include="Assets/AWV_icon.png" Pack="true" PackagePath="Assets/" />
+        <None Include="Assets/README.md" Pack="true" PackagePath="/" Link="README.md" />
+        <None Include="Assets/LICENSE" Pack="true" PackagePath="/" Link="LICENSE" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
@@ -32,18 +46,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Reference Include="Avalonia.Base">
-            <HintPath>..\..\..\..\.nuget\packages\avalonia\11.3.6\ref\net8.0\Avalonia.Base.dll</HintPath>
-        </Reference>
-        <Reference Include="Avalonia.Controls">
-            <HintPath>..\..\..\..\.nuget\packages\avalonia\11.3.6\ref\net8.0\Avalonia.Controls.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Web.WebView2.Core">
-            <HintPath>..\..\..\..\.nuget\packages\microsoft.web.webview2\1.0.3650-prerelease\lib_manual\netcoreapp3.0\Microsoft.Web.WebView2.Core.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Web.WebView2.WinForms">
-            <HintPath>..\..\..\..\.nuget\packages\microsoft.web.webview2\1.0.3650-prerelease\lib_manual\netcoreapp3.0\Microsoft.Web.WebView2.WinForms.dll</HintPath>
-        </Reference>
+        <PackageReference Include="Avalonia" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
+        <PackageReference Include="Microsoft.Web.WebView2" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
+        <!-- Required for AndroidViewControlHandle native embedding. -->
+        <PackageReference Include="Avalonia.Android" />
     </ItemGroup>
 
 </Project>

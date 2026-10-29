@@ -1,92 +1,133 @@
-using System.Globalization;
-using Avalonia.Platform;
 using AWV.WebView.Avalonia.Interfaces;
 using AWV.WebView.Avalonia.Managers;
 
 namespace AWV.WebView.Avalonia.Hosts;
 
-// Linux/X11 implementation of WebView host using GTK + WebKit.
-// Creates a GtkPlug inside Avalonia window and embeds WebKit WebView.
-public class LinuxWebViewHost : WebViewHost.IWebViewHost
+/// <summary>
+/// Linux WebView host using WebKitGTK off-screen rendering.
+///
+/// Unlike the old GtkPlug/XEmbed implementation this does not embed a foreign
+/// native window, so it is independent of whether Avalonia is running on X11
+/// or native Wayland.
+/// </summary>
+internal sealed class LinuxWebViewHost : WebViewHost.IOffscreenWebViewHost, WebViewHost.INavigationHost
 {
-    private GtkPlugWithWebView? _nativePlug; // stores native GtkPlug + WebView
+    private OffscreenWebView? _webView;
+    private WebViewNavigationPolicy _policy = new();
 
-    // Creates GtkPlug + WebView and wraps XID in Avalonia's PlatformHandle.
-    public IPlatformHandle Create(IPlatformHandle parent, string? url)
+    public event Action<WebViewHost.NavigationSnapshot>? NavigationStateChanged;
+    public event Action<string, string>? NavigationBlocked;
+
+    public void SetNavigationPolicy(WebViewNavigationPolicy policy) =>
+        _policy = policy ?? throw new ArgumentNullException(nameof(policy));
+
+    public void GoBack() { if (_webView != null) GtkManager.GoBack(_webView); }
+    public void GoForward() { if (_webView != null) GtkManager.GoForward(_webView); }
+    public void Reload() { if (_webView != null) GtkManager.Reload(_webView); }
+    public void Stop() { if (_webView != null) GtkManager.Stop(_webView); }
+
+    private void OnNavigationChanged(WebViewHost.NavigationSnapshot state) => NavigationStateChanged?.Invoke(state);
+    private void OnNavigationRejected(string url, string reason) => NavigationBlocked?.Invoke(url, reason);
+
+    public event Action<WebViewHost.WebViewFrame>? FrameReady;
+
+    public void Create(int width, int height, string? url)
     {
-        if (parent == null)
-            throw new InvalidOperationException("Native parent handle is required for WebView on Linux/X11.");
+        if (_webView != null)
+            throw new InvalidOperationException("Linux WebView has already been created.");
 
-        // Get raw platform handle (could be boxed as string, IntPtr, nint, etc.)
-        object handleObj = parent.Handle;
+        _webView = GtkManager.CreateOffscreenWebView(
+            width, height, url, _policy, OnNavigationChanged, OnNavigationRejected);
+        _webView.FrameReady += OnFrameReady;
+    }
+    
+    public void Focus(bool focusIn)
+    {
+        if (_webView != null)
+            GtkManager.SendFocus(_webView, focusIn);
+    }
 
-        // Convert handle to ulong XID (supports decimal, hex string, IntPtr, numeric)
-        ulong parentXid;
+    public void Resize(int width, int height)
+    {
+        if (_webView == null)
+            return;
+
+        GtkManager.ResizeOffscreenWebView(_webView, width, height);
+    }
+
+    public void Navigate(string url)
+    {
+        if (_webView == null)
+            return;
+
+        GtkManager.NavigateOffscreenWebView(_webView, url);
+    }
+
+    public void PointerMoved(double x, double y)
+    {
+        if (_webView != null)
+            GtkManager.SendPointerMotion(_webView, x, y);
+    }
+
+    public void PointerPressed(double x, double y, WebViewHost.WebViewPointerButton button)
+    {
+        if (_webView != null)
+            GtkManager.SendPointerButton(_webView, x, y, ToGdkButton(button), true);
+    }
+
+    public void PointerReleased(double x, double y, WebViewHost.WebViewPointerButton button)
+    {
+        if (_webView != null)
+            GtkManager.SendPointerButton(_webView, x, y, ToGdkButton(button), false);
+    }
+
+    public void Scrolled(double x, double y, double deltaX, double deltaY)
+    {
+        if (_webView != null)
+            GtkManager.SendScroll(_webView, x, y, deltaX, deltaY);
+    }
+
+    public void KeyEvent(uint gdkKeyval, bool isDown)
+    {
+        if (_webView != null)
+            GtkManager.SendKey(_webView, gdkKeyval, isDown);
+    }
+
+    public void TextInput(string text)
+    {
+        if (_webView != null && !string.IsNullOrEmpty(text))
+            GtkManager.SendUnicodeText(_webView, text);
+    }
+
+    public void Destroy()
+    {
+        var webView = _webView;
+        if (webView == null)
+            return;
+
+        _webView = null;
+        webView.FrameReady -= OnFrameReady;
+
         try
         {
-            if (handleObj is string sHandle)
-            {
-                if (sHandle.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (!ulong.TryParse(sHandle.Substring(2), NumberStyles.HexNumber, null, out parentXid))
-                        throw new FormatException("Invalid hex XID: " + sHandle);
-                }
-                else if (!ulong.TryParse(sHandle, out parentXid))
-                {
-                    // try hex without 0x prefix
-                    if (!ulong.TryParse(sHandle, NumberStyles.HexNumber, null, out parentXid))
-                        throw new FormatException("Invalid XID string: " + sHandle);
-                }
-            }
-            else if (handleObj is IntPtr iptr)
-            {
-                parentXid = unchecked((ulong)iptr.ToInt64());
-            }
-            else if (handleObj is nint ni)
-            {
-                parentXid = unchecked((ulong)ni);
-            }
-            else
-            {
-                // fallback to Convert
-                parentXid = Convert.ToUInt64(handleObj);
-            }
+            GtkManager.DestroyOffscreenWebView(webView);
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("Failed to parse parent XID: " + parent.Handle, ex);
+            // Shutdown must not take down Avalonia, but still report failure.
+            Console.Error.WriteLine($"[AWV GTK] WebView cleanup failed: {ex}");
         }
-
-        // make sure GTK thread is running before creating plug
-        GtkManager.EnsureInitialized();
-
-        // create GtkPlug + WebView synchronously on GTK thread
-        var _url = string.IsNullOrEmpty(url) ? "about:blank" : url; // Load blank page when passed url is wrong else load the passed one
-        _nativePlug = GtkManager.CreatePlugWithWebView(parentXid, _url);
-
-        // return plug XID as Avalonia native control handle
-        return new PlatformHandle((nint)(long)_nativePlug.PlugXid, "XID");
     }
 
-    // Destroys native resources when Avalonia control is destroyed.
-    public void Destroy(IPlatformHandle control)
-    {
-        if (_nativePlug != null)
+    private void OnFrameReady(WebViewHost.WebViewFrame frame)
+        => FrameReady?.Invoke(frame);
+
+    private static uint ToGdkButton(WebViewHost.WebViewPointerButton button) =>
+        button switch
         {
-            try
-            {
-                GtkManager.DestroyPlug(_nativePlug); // safely destroy GtkPlug + WebView
-            }
-            catch
-            {
-                // ignored, don't crash app on shutdown
-            }
-
-            _nativePlug = null; // release reference
-        }
-    }
-    
-    // When i get mentally sane mby i will try to implement propre wayland support natively,
-    // but my attemps were destroyed by the damn design of the wayland 
-    // need to know more how to connect webview window to app in wayland
+            WebViewHost.WebViewPointerButton.Left => 1u,
+            WebViewHost.WebViewPointerButton.Middle => 2u,
+            WebViewHost.WebViewPointerButton.Right => 3u,
+            _ => 1u
+        };
 }

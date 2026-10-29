@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWV.WebView.Avalonia", "AWV.WebView.Avalonia\AWV.WebView.Avalonia.csproj", "{058019B4-48FB-45E0-B426-1386875AA334}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWV.WebView.Avalonia.Sample.LinuxX11", "AWV.WebView.Avalonia.Sample.LinuxX11\AWV.WebView.Avalonia.Sample.LinuxX11.csproj", "{FF5DF9BD-A09E-4EFA-8096-5DB30489B1D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWV.WebView.Avalonia.Sample.Linux", "AWV.WebView.Avalonia.Sample.Linux\AWV.WebView.Avalonia.Sample.Linux.csproj", "{FF5DF9BD-A09E-4EFA-8096-5DB30489B1D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

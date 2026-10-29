@@ -1,5 +1,3 @@
-using UIKit;
-
 namespace AWV.WebView.Avalonia.Sample.iOS;
 
 public class Application

@@ -1,7 +1,7 @@
 ﻿using System;
 using Avalonia;
 
-namespace AWV.WebView.Avalonia.Sample.LinuxX11;
+namespace AWV.WebView.Avalonia.Sample.Linux;
 
 sealed class Program
 {
